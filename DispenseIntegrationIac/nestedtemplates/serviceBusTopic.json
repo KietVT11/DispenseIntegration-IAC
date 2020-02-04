@@ -1,0 +1,116 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"serviceBusNamespaceName": {
+			"type": "string",
+			"metadata": {
+				"description": "Name of the Service Bus namespace"
+			}
+		},
+		"serviceBusTopicNames": {
+			"type": "array",
+			"metadata": {
+				"description": "List of topics"
+			}
+		},
+		"location": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().location]",
+			"metadata": {
+				"description": "Location for all resources."
+			}
+		},
+		"defaultMessageTimeToLive": {
+			"type": "string",
+			"defaultValue": "P10675199DT2H48M5.4775807S",
+			"metadata": {
+				"description": "(also used for subscription) Default message time to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself."
+			}
+		},
+		"maxSizeInMegabytes": {
+			"type": "int",
+			"defaultValue": 5120,
+			"metadata": {
+				"description": "the maximum size of the queue in megabytes, which is the size of memory allocated for the queue. When partition is enabled this is times 16"
+			}
+		},
+		"requiresDuplicateDetection": {
+			"type": "bool",
+			"defaultValue": false,
+			"metadata": {
+				"description": "the value indicating if this queue requires duplicate detection."
+			}
+		},
+		"duplicateDetectionHistoryTimeWindow": {
+			"type": "string",
+			"defaultValue": "PT10M",
+			"metadata": {
+				"description": "TimeSpan structure that defines the duration of the duplicate detection history. The default value is 10 minutes."
+			}
+		},
+		"enableBatchedOperations": {
+			"type": "bool",
+			"defaultValue": true,
+			"metadata": {
+				"description": "Value that indicates whether server-side batched operations are enabled."
+			}
+		},
+		"supportOrdering": {
+			"type": "bool",
+			"defaultValue": false,
+			"metadata": {
+				"description": "Value that indicates whether the topic supports ordering."
+			}
+		},
+		"autoDeleteOnIdle": {
+			"type": "string",
+			"defaultValue": "P10675199DT2H48M5.4775807S",
+			"metadata": {
+				"description": "Value that indicates whether the topic delete"
+			}
+		},
+		"enablePartitioning": {
+			"type": "bool",
+			"defaultValue": true,
+			"metadata": {
+				"description": "value that indicates whether the queue to be partitioned across multiple message brokers is enabled."
+			}
+		},
+		"enableExpress": {
+			"type": "bool",
+			"defaultValue": false,
+			"metadata": {
+				"description": "a value that indicates whether Express Entities are enabled. An express queue holds a message in memory temporarily before writing it to persistent storage."
+			}
+		}
+	},
+	"variables": {
+	},
+	"resources": [
+		{
+			"type": "Microsoft.ServiceBus/namespaces/topics",
+			"name": "[concat(parameters('serviceBusNamespaceName'), '/', parameters('serviceBusTopicNames')[copyIndex()])]",
+			"apiVersion": "2017-04-01",
+			"location": "[parameters('location')]",
+			"copy": {
+				"name": "topicLoop",
+				"count": "[length(parameters('serviceBusTopicNames'))]"
+			},
+			"properties": {
+				"defaultMessageTimeToLive": "[parameters('defaultMessageTimeToLive')]",
+				"maxSizeInMegabytes": "[parameters('maxSizeInMegabytes')]",
+				"requiresDuplicateDetection": "[parameters('requiresDuplicateDetection')]",
+				"duplicateDetectionHistoryTimeWindow": "[parameters('duplicateDetectionHistoryTimeWindow')]",
+				"enableBatchedOperations": "[parameters('enableBatchedOperations')]",
+				"supportOrdering": "[parameters('supportOrdering')]",
+				"autoDeleteOnIdle": "[parameters('autoDeleteOnIdle')]",
+				"enablePartitioning": "[parameters('enablePartitioning')]",
+				"enableExpress": "[parameters('enableExpress')]"
+			},
+			"dependsOn": []
+		}
+	],
+	"outputs": {
+	}
+}

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|AnyCPU">
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|AnyCPU">
+      <Configuration>Release</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>f41da4f4-b4cd-4a48-b1d8-965bbaf208fe</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PrepareForBuildDependsOn>
+    </PrepareForBuildDependsOn>
+  </PropertyGroup>
+  <Import Condition=" Exists('Deployment.targets') " Project="Deployment.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+  <!-- vertag<:>start tokens<:>maj.min -->
+  <Import Condition=" Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets') " Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets" />
+  <!-- vertag<:>end -->
+  <ItemGroup>
+    <None Include="appInsightLogAlert.json" />
+    <None Include="appInsights.json" />
+    <None Include="autoscaleSettings.json" />
+    <None Include="blobContainers.json" />
+    <None Include="blobStorage.json" />
+    <None Include="databaseAccounts.json" />
+    <None Include="Deployment.targets">
+      <Visible>False</Visible>
+    </None>
+    <None Include="deploymentSlots.json" />
+    <None Include="elasticPool.json" />
+    <None Include="emailActionGroup.json" />
+    <None Include="serverFarms.json" />
+    <None Include="serviceBus.json" />
+    <None Include="serviceBusAuthorizationRules.json" />
+    <None Include="serviceBusTopic.json" />
+    <None Include="serviceBusTopicAuthorizationRules.json" />
+    <None Include="serviceBusTopicSubscription.json" />
+    <None Include="serviceBusTopicSubscriptionRules.json" />
+    <None Include="sqlDatabase.json" />
+    <None Include="sqlDatabaseWithoutElasticPool.json" />
+    <None Include="sqlServer.json" />
+    <None Include="sqlServerFirewallRules.json" />
+    <None Include="storageAccounts.json" />
+    <None Include="functionApp.json" />
+    <None Include="webApps.json" />
+    <None Include="webAppsWithConnectionString.json" />
+    <None Include="webAppswithVirtualApp.json" />
+  </ItemGroup>
+  <Target Name="GetReferenceAssemblyPaths" />
+</Project>

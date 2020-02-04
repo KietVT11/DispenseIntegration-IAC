@@ -1,0 +1,75 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"name": {
+			"type": "string"
+		},
+		"hostingPlanName": {
+			"type": "string"
+		},
+		"hostingEnvironment": {
+			"type": "string"
+		},
+		"location": {
+			"type": "string"
+		},
+		"appInsightName": {
+			"type": "string"
+		},
+		"useAppInsight": {
+			"type": "string",
+			"defaultValue": "Yes",
+			"allowedValues": [
+				"Yes",
+				"No"
+			]
+		},
+		"virtualApplicationsVirtualPath": {
+			"type": "string",
+			"defaultValue": "/"
+		},
+		"virtualApplicationsPhysicalPath": {
+			"type": "string",
+			"defaultValue": "site\\wwwroot"
+		}
+	},
+	"resources": [
+		{
+			"type": "Microsoft.Web/sites",
+			"kind": "api",
+			"name": "[parameters('name')]",
+			"apiVersion": "2016-03-01",
+			"location": "[parameters('location')]",
+			"properties": {
+				"siteConfig": {
+					"appSettings": [
+						{
+							"name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+							"value": "[if(equals(parameters('useAppInsight'), 'Yes'), reference(resourceId('microsoft.insights/components/', parameters('appInsightName')), '2015-05-01').InstrumentationKey, json('null'))]"
+						}
+					],
+					"virtualApplications": [
+						{
+							"virtualPath": "[parameters('virtualApplicationsVirtualPath')]",
+							"physicalPath": "[parameters('virtualApplicationsPhysicalPath')]",
+							"preloadEnabled": false,
+							"virtualDirectories": null
+						},
+						{
+							"virtualPath": "/",
+							"physicalPath": "site\\wwwroot",
+							"preloadEnabled": false,
+							"virtualDirectories": null
+						}
+					]
+				},
+				"name": "[parameters('name')]",
+				"serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+				"hostingEnvironment": "[parameters('hostingEnvironment')]",
+				"httpsOnly": true
+			},
+			"dependsOn": []
+		}
+	]
+}

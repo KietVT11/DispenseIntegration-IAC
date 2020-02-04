@@ -1,0 +1,112 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"name": {
+			"type": "string"
+		},
+		"hostingPlanName": {
+			"type": "string"
+		},
+		"hostingEnvironment": {
+			"type": "string"
+		},
+		"location": {
+			"type": "string"
+		},
+		"appInsightName": {
+			"type": "string"
+		},
+		"resourceGroupName": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().name]"
+		},
+		"useAppInsight": {
+			"type": "string",
+			"defaultValue": "Yes",
+			"allowedValues": [
+				"Yes",
+				"No"
+			]
+		},
+		"currentStack": {
+			"type": "string",
+			"defaultValue": "dotnet"
+		},
+		"subscriptionId": {
+			"type": "string",
+			"defaultValue": "[subscription().subscriptionId]"
+		},
+		"netFrameworkVersion": {
+			"type": "string",
+			"defaultValue": "v4.0"
+		},
+		"kind": {
+			"type": "string",
+			"defaultValue": "api"
+		}
+	},
+	"resources": [
+		{
+			"type": "Microsoft.Web/sites",
+			"kind": "[parameters('kind')]",
+			"name": "[parameters('name')]",
+			"apiVersion": "2016-03-01",
+			"location": "[parameters('location')]",
+			"properties": {
+				"siteConfig": {
+					"appSettings": [
+						{
+							"name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+							"value": "[if(equals(parameters('useAppInsight'), 'Yes'), reference(resourceId('microsoft.insights/components/', parameters('appInsightName')), '2015-05-01').InstrumentationKey, json('null'))]"
+						},
+						{
+							"name": "APPINSIGHTS_PROFILERFEATURE_VERSION",
+							"value": "1.0.0"
+						},
+						{
+							"name": "APPINSIGHTS_SNAPSHOTFEATURE_VERSION",
+							"value": "1.0.0"
+						},
+						{
+							"name": "ApplicationInsightsAgent_EXTENSION_VERSION",
+							"value": "~2"
+						},
+						{
+							"name": "DiagnosticServices_EXTENSION_VERSION",
+							"value": "~3"
+						},
+						{
+							"name": "InstrumentationEngine_EXTENSION_VERSION",
+							"value": "~1"
+						},
+						{
+							"name": "SnapshotDebugger_EXTENSION_VERSION",
+							"value": "~1"
+						},
+						{
+							"name": "XDT_MicrosoftApplicationInsights_BaseExtensions",
+							"value": "~1"
+						},
+						{
+							"name": "XDT_MicrosoftApplicationInsights_Mode",
+							"value": "recommended"
+						}
+					],
+					"metadata": [
+						{
+							"name": "CURRENT_STACK",
+							"value": "[parameters('currentStack')]"
+						}
+					],
+					"netFrameworkVersion": "[parameters('netFrameworkVersion')]"
+				},
+				"name": "[parameters('name')]",
+				"serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('resourceGroupName'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+				"hostingEnvironment": "[parameters('hostingEnvironment')]",
+				"httpsOnly": true
+			},
+			"dependsOn": []
+		}
+	]
+}

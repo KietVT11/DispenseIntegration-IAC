@@ -1,0 +1,92 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"names": {
+			"defaultValue": [],
+			"type": "array"
+		},
+		"location": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().location]"
+		},
+		"hostingPlanName": {
+			"type": "string"
+		},
+		"hostingEnvironment": {
+			"type": "string"
+		},
+		"appInsightName": {
+			"type": "string"
+		},
+		"storageAccountName": {
+			"type": "string"
+		},
+		"alwaysOn": {
+			"type": "bool",
+			"defaultValue": true
+		},
+		"resourceGroupName": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().name]"
+		},
+		"subscriptionId": {
+			"type": "string",
+			"defaultValue": "[subscription().subscriptionId]"
+		}
+	},
+	"resources": [
+		{
+			"type": "Microsoft.Web/sites",
+			"kind": "functionapp",
+			"name": "[parameters('names')[copyIndex()]]",
+			"apiVersion": "2016-03-01",
+			"location": "[parameters('location')]",
+			"copy": {
+				"name": "functionApp",
+				"count": "[length(parameters('names'))]"
+			},
+			"properties": {
+				"siteConfig": {
+					"alwaysOn": "[parameters('alwaysOn')]",
+					"appSettings": [
+						{
+							"name": "FUNCTIONS_WORKER_RUNTIME",
+							"value": "dotnet"
+						},
+						{
+							"name": "AzureWebJobsStorage",
+							"value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1)]"
+						},
+						{
+							"name": "FUNCTIONS_EXTENSION_VERSION",
+							"value": "~2"
+						},
+						{
+							"name": "WEBSITE_CONTENTAZUREFILECONNECTIONSTRING",
+							"value": "[concat('DefaultEndpointsProtocol=https;AccountName=',parameters('storageAccountName'),';AccountKey=',listKeys(resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2015-05-01-preview').key1)]"
+						},
+						{
+							"name": "WEBSITE_CONTENTSHARE",
+							"value": "[concat(toLower(parameters('names')[copyIndex()]), '9b43')]"
+						},
+						{
+							"name": "WEBSITE_NODE_DEFAULT_VERSION",
+							"value": "8.11.1"
+						},
+						{
+							"name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+							"value": "[reference(resourceId('microsoft.insights/components/', parameters('appInsightName')), '2015-05-01').InstrumentationKey]"
+						}
+					]
+				},
+				"name": "[parameters('names')[copyIndex()]]",
+				"serverFarmId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('resourceGroupName'), '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+				"hostingEnvironment": "[parameters('hostingEnvironment')]",
+				"clientAffinityEnabled": false,
+				"reserved": false
+			},
+			"dependsOn": []
+		}
+	]
+}

@@ -1,0 +1,57 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"serverName": {
+			"type": "String"
+		},
+		"serverLocation": {
+			"type": "String"
+		},
+		"elasticPoolName": {
+			"type": "String"
+		},
+		"tier": {
+			"type": "string",
+			"defaultValue": "Standard",
+			"allowedValues": [
+				"Basic",
+				"Standard",
+				"Premium"
+			]
+		},
+		"poolLimit": {
+			"type": "String"
+		},
+		"poolSize": {
+			"type": "Int"
+		},
+		"zoneRedundant": {
+			"defaultValue": false,
+			"type": "Bool"
+		},
+		"licenseType": {
+			"defaultValue": "",
+			"type": "String"
+		}
+	},
+	"variables": {},
+	"resources": [
+		{
+			"type": "Microsoft.Sql/servers/elasticpools",
+			"sku": {
+				"name": "[concat(parameters('tier'), 'Pool')]",
+				"tier": "[parameters('tier')]",
+				"capacity": "[parameters('poolLimit')]"
+			},
+			"name": "[concat(parameters('serverName'), '/', parameters('elasticPoolName'))]",
+			"apiVersion": "2017-10-01-preview",
+			"location": "[parameters('serverLocation')]",
+			"properties": {
+				"maxSizeGB": "[parameters('poolSize')]",
+				"zoneRedundant": "[parameters('zoneRedundant')]",
+				"licenseType": "[parameters('licenseType')]"
+			}
+		}
+	]
+}

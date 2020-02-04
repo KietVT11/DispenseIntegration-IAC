@@ -1,0 +1,47 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"hostingPlanName": {
+			"type": "String"
+		},
+		"hostingEnvironment": {
+			"type": "String"
+		},
+		"location": {
+			"type": "String"
+		},
+		"sku": {
+			"type": "String"
+		},
+		"skuCode": {
+			"type": "String"
+		},
+		"workerSize": {
+			"type": "String"
+		},
+		"scaleOutInstanceCount": {
+			"type": "int",
+			"defaultValue": 1
+		}
+	},
+	"resources": [
+		{
+			"type": "Microsoft.Web/serverfarms",
+			"sku": {
+				"Tier": "[parameters('sku')]",
+				"Name": "[parameters('skuCode')]",
+				"capacity": "[parameters('scaleOutInstanceCount')]"
+			},
+			"name": "[parameters('hostingPlanName')]",
+			"apiVersion": "2016-09-01",
+			"location": "[parameters('location')]",
+			"properties": {
+				"name": "[parameters('hostingPlanName')]",
+				"workerSizeId": "[parameters('workerSize')]",
+				"numberOfWorkers": "1",
+				"hostingEnvironment": "[parameters('hostingEnvironment')]"
+			}
+		}
+	]
+}

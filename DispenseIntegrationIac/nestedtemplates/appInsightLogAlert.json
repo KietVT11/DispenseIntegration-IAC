@@ -1,0 +1,134 @@
+﻿{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"alertName": {
+			"type": "string"
+		},
+		"alertLocation": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().location]"
+		},
+		"alertDescription": {
+			"type": "string"
+		},
+
+		"alertStatus": {
+			"type": "string",
+			"defaultValue": "true"
+		},
+
+		"alertSourceQuery": {
+			"type": "string"
+		},
+		"alertSourceType": {
+			"type": "string",
+			"defaultValue": "ResultCount"
+		},
+		"subscriptionId": {
+			"type": "string",
+			"defaultValue": "[subscription().subscriptionId]"
+		},
+		"resourceGroupName": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().name]"
+		},
+		"appInsightName": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"timeWindowInMinutes": {
+			"type": "int",
+			"defaultValue": 5
+		},
+		"frequencyInMinutes": {
+			"type": "int",
+			"defaultValue": 5
+		},
+		"severity": {
+			"type": "string",
+			"defaultValue": "3",
+			"allowedValues": [
+				"0",
+				"1",
+				"2",
+				"3",
+				"4"
+			],
+			"metadata": {
+				"description": "Severity of alert {0,1,2,3,4}"
+			}
+		},
+		"operator": {
+			"type": "string",
+			"defaultValue": "GreaterThan",
+			"allowedValues": [
+				"Equals",
+				"NotEquals",
+				"GreaterThan",
+				"GreaterThanOrEqual",
+				"LessThan",
+				"LessThanOrEqual"
+			],
+			"metadata": {
+				"description": "Operator comparing the current value with the threshold value."
+			}
+		},
+		"threshold": {
+			"type": "string",
+			"defaultValue": "0"
+		},
+		"actionGroupSubscriptionId": {
+			"type": "string",
+			"defaultValue": "[subscription().subscriptionId]"
+		},
+		"actionGroupResourceGroupName": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().name]"
+		},
+		"actionGroupName": {
+			"type": "string",
+			"defaultValue": ""
+		},
+		"emailSubject": {
+			"type": "string"
+		}
+	},
+	"variables": {
+		"dataSourceId": "[concat('/subscriptions/', parameters('subscriptionId'),'/resourcegroups/', parameters('resourceGroupName'), '/providers/microsoft.insights/components/', parameters('appInsightName'))]",
+		"actionGroup": "[concat('/subscriptions/', parameters('actionGroupSubscriptionId'),'/resourcegroups/', parameters('actionGroupResourceGroupName'), '/providers/microsoft.insights/actiongroups/', parameters('actionGroupName'))]"
+	},
+	"resources": [
+		{
+			"name": "[parameters('alertName')]",
+			"type": "Microsoft.Insights/scheduledQueryRules",
+			"apiVersion": "2018-04-16",
+			"location": "[parameters('alertLocation')]",
+			"properties": {
+				"description": "[parameters('alertDescription')]",
+				"enabled": "[parameters('alertStatus')]",
+				"source": {
+					"query": "[parameters('alertSourceQuery')]",
+					"dataSourceId": "[variables('dataSourceId')]",
+					"queryType": "[parameters('alertSourceType')]"
+				},
+				"schedule": {
+					"frequencyInMinutes": "[parameters('frequencyInMinutes')]",
+					"timeWindowInMinutes": "[parameters('timeWindowInMinutes')]"
+				},
+				"action": {
+					"odata.type": "Microsoft.WindowsAzure.Management.Monitoring.Alerts.Models.Microsoft.AppInsights.Nexus.DataContracts.Resources.ScheduledQueryRules.AlertingAction",
+					"severity": "[parameters('severity')]",
+					"aznsAction": {
+						"actionGroup": "[array(variables('actionGroup'))]",
+						"emailSubject": "[parameters('emailSubject')]"
+					},
+					"trigger": {
+						"thresholdOperator": "[parameters('operator')]",
+						"threshold": "[parameters('threshold')]"
+					}
+				}
+			}
+		}
+	]
+}

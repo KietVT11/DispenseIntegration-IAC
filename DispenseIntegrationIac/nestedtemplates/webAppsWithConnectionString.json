@@ -1,0 +1,72 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"name": {
+			"type": "string"
+		},
+		"hostingPlanName": {
+			"type": "string"
+		},
+		"hostingEnvironment": {
+			"type": "string"
+		},
+		"location": {
+			"type": "string"
+		},
+		"appInsightName": {
+			"type": "string"
+		},
+		"serverName": {
+			"type": "string"
+		},
+		"databaseName": {
+			"type": "string"
+		},
+		"sqlUserName": {
+			"type": "string"
+		},
+		"sqlPassword": {
+			"type": "string"
+		},
+		"useAppInsight": {
+			"type": "string",
+			"defaultValue": "Yes",
+			"allowedValues": [
+				"Yes",
+				"No"
+			]
+		}
+	},
+	"resources": [
+		{
+			"type": "Microsoft.Web/sites",
+			"kind": "api",
+			"name": "[parameters('name')]",
+			"apiVersion": "2016-03-01",
+			"location": "[parameters('location')]",
+			"properties": {
+				"siteConfig": {
+					"appSettings": [
+						{
+							"name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+							"value": "[if(equals(parameters('useAppInsight'), 'Yes'), reference(resourceId('microsoft.insights/components/', parameters('appInsightName')), '2015-05-01').InstrumentationKey, json('null'))]"
+						}
+					],
+					"connectionStrings": [
+						{
+							"name": "ConnString",
+							"connectionString": "[concat('Server=tcp:',parameters('serverName'), '.database.windows.net',';Database=', parameters('databaseName'), ';User ID=', parameters('sqlUserName'), '@', parameters('serverName'), ';Password=', parameters('sqlPassword'), ';Trusted_Connection=False; Encrypt=True;')]",
+							"type": "SQLServer"
+						}
+					]
+				},
+				"name": "[parameters('name')]",
+				"serverFarmId": "[concat('/subscriptions/', subscription().subscriptionId,'/resourcegroups/', resourceGroup().name, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]",
+				"hostingEnvironment": "[parameters('hostingEnvironment')]",
+				"httpsOnly": true
+			},
+			"dependsOn": []
+		}
+	]
+}

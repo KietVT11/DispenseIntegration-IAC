@@ -1,0 +1,51 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "serviceBusNamespaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Service Bus namespace"
+      }
+    },
+    "serviceBusTopicSubscriptionRules": {
+      "type": "array",
+      "metadata": {
+        "description": "List of Subcription Rules"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    }
+  },
+  "variables": {
+
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+      "name": "[concat(parameters('serviceBusNamespaceName'), '/', parameters('serviceBusTopicSubscriptionRules')[copyIndex()].topic, '/', parameters('serviceBusTopicSubscriptionRules')[copyIndex()].subscription, '/', parameters('serviceBusTopicSubscriptionRules')[copyIndex()].rule)]",
+      "apiVersion": "2017-04-01",
+      "location": "[parameters('location')]",
+      "scale": null,
+      "copy": {
+        "name": "subscriptionRulesLoop",
+        "count": "[length(parameters('serviceBusTopicSubscriptionRules'))]"
+      },
+      "properties": {
+        "action": {},
+        "filterType": "SqlFilter",
+        "sqlFilter": {
+          "sqlExpression": "[parameters('serviceBusTopicSubscriptionRules')[copyIndex()].sqlExpression]"
+        }
+      },
+      "dependsOn": []
+    }
+  ],
+  "outputs": {
+  }
+}

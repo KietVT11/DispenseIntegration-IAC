@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|AnyCPU">
+      <Configuration>Debug</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|AnyCPU">
+      <Configuration>Release</Configuration>
+      <Platform>AnyCPU</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>24a190fc-23f4-4d9c-977c-f1bfcbdf0f37</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PrepareForBuildDependsOn>
+    </PrepareForBuildDependsOn>
+  </PropertyGroup>
+  <Import Condition=" Exists('Deployment.targets') " Project="Deployment.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
+  <!-- vertag<:>start tokens<:>maj.min -->
+  <Import Condition=" Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets') " Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Deployment\1.1\DeploymentProject.targets" />
+  <!-- vertag<:>end -->
+  <ItemGroup>
+    <None Include="dispenseintegration.dev.parameters.json" />
+    <None Include="dispenseintegration.parameters.json" />
+    <None Include="dispenseintegration.json" />
+    <None Include="Deploy-AzureResourceGroup.ps1" />
+    <None Include="Deploy-AzureResourceGroup.test.ps1" />
+    <None Include="Deployment.targets">
+      <Visible>False</Visible>
+    </None>
+    <None Include="nestedtemplates\appInsightLogAlert.json" />
+    <None Include="nestedtemplates\appInsights.json" />
+    <None Include="nestedtemplates\autoscaleSettings.json" />
+    <None Include="nestedtemplates\blobContainers.json" />
+    <None Include="nestedtemplates\blobStorage.json" />
+    <None Include="nestedtemplates\databaseAccounts.json" />
+    <None Include="nestedtemplates\deploymentSlots.json" />
+    <None Include="nestedtemplates\elasticPool.json" />
+    <None Include="nestedtemplates\functionApp.json" />
+    <None Include="nestedtemplates\serverFarms.json" />
+    <None Include="nestedtemplates\serviceBus.json" />
+    <None Include="nestedtemplates\serviceBusAuthorizationRules.json" />
+    <None Include="nestedtemplates\serviceBusTopic.json" />
+    <None Include="nestedtemplates\serviceBusTopicAuthorizationRules.json" />
+    <None Include="nestedtemplates\serviceBusTopicSubscription.json" />
+    <None Include="nestedtemplates\sqlDatabase.json" />
+    <None Include="nestedtemplates\sqlDatabaseWithoutElasticPool.json" />
+    <None Include="nestedtemplates\sqlServer.json" />
+    <None Include="nestedtemplates\sqlServerFirewallRules.json" />
+    <None Include="nestedtemplates\storageAccounts.json" />
+    <None Include="nestedtemplates\webApps.json" />
+    <None Include="nestedtemplates\webAppsWithConnectionString.json" />
+    <None Include="nestedtemplates\webAppswithVirtualApp.json" />
+    <None Include="Run-GitSubmoduleUpdate.ps1" />
+    <None Include="Run-UnitTest.ps1" />
+    <None Include="scripts\Create-KeyVault.ps1" />
+    <None Include="scripts\Create-KeyVaultSecret.ps1" />
+    <None Include="scripts\Create-ResourceGroup.ps1" />
+    <None Include="scripts\Deploy-ResourceGroup.ps1" />
+    <None Include="Set-Parameters.ps1" />
+  </ItemGroup>
+  <Target Name="GetReferenceAssemblyPaths" />
+</Project>

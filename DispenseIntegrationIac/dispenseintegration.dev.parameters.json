@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"sqlServerName": {
+			"value": "dispense-integration-mssqlsrvr-dev"
+		},
+		"dispenseIntegrationDatabasesNames": {
+			"value": [ "dispense-integration-db-dev", "dispense-integration-db-staging-dev" ]
+		},
+		"webAppName": {
+			"value": "dispense-integration-api-dev"
+		},
+		"appInsightName": {
+			"value": "dispense-integration-apin-dev"
+		},
+		"appServicePlanName": {
+			"value": "dispense-integration-asp-dev"
+		},
+		"appServicePlanSku": {
+			"value": "Standard"
+		},
+		"appServicePlanSkuCode": {
+			"value": "S1"
+		},
+		"deploymentSlots": {
+			"value": [ "staging" ]
+		}
+	}
+}

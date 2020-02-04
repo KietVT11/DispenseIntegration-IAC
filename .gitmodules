@@ -1,0 +1,3 @@
+[submodule "ApiGatewayIac/nestedtemplates"]
+	path = ApiGatewayIac/nestedtemplates
+	url = https://webstercare.visualstudio.com/Infrastructure-as-Code/_git/Nested-Template

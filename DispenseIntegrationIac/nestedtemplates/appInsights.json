@@ -1,0 +1,28 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"name": {
+			"type": "String"
+		},
+		"location": {
+			"type": "string",
+			"defaultValue": "SouthEast Asia"
+		}
+	},
+	"resources": [
+		{
+			"type": "microsoft.insights/components",
+			"name": "[parameters('name')]",
+			"apiVersion": "2015-05-01",
+			"location": "SouthEast Asia",
+			"tags": {
+				"[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('name'))]": "Resource"
+			},
+			"properties": {
+				"ApplicationId": "[parameters('name')]",
+				"Request_Source": "IbizaWebAppExtensionCreate"
+			}
+		}
+	]
+}

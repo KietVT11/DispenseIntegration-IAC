@@ -1,0 +1,47 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"sqlServerName": {
+			"type": "string",
+			"metadata": {
+				"description": "Name of the Sql Server"
+			}
+		},
+		"location": {
+			"type": "string",
+			"defaultValue": "[resourceGroup().location]",
+			"metadata": {
+				"description": "Location for all resources."
+			}
+		},
+		"sqlServerFireWallRules": {
+			"type": "array",
+			"metadata": {
+				"description": "List of Firewall rules for Sql server"
+			}
+		}
+	},
+	"variables": {
+	},
+	"resources": [
+		{
+			"type": "Microsoft.Sql/servers/firewallRules",
+			"name": "[concat(parameters('sqlServerName'), '/', parameters('sqlServerFireWallRules')[copyIndex()].rule)]",
+			"apiVersion": "2015-05-01-preview",
+			"scale": null,
+			"copy": {
+				"name": "sqlServerFireWallRulesLoop",
+				"count": "[length(parameters('sqlServerFireWallRules'))]"
+			},
+			"properties": {
+				"startIpAddress": "[parameters('sqlServerFireWallRules')[copyIndex()].startIPAddress]",
+				"endIpAddress": "[parameters('sqlServerFireWallRules')[copyIndex()].endIPAddress]"
+			},
+			"dependsOn": [
+			]
+		}
+	],
+	"outputs": {
+	}
+}
